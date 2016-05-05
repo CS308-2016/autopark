@@ -1,0 +1,179 @@
+{\rtf1\ansi\deff0\nouicompat{\fonttbl{\f0\fnil Consolas;}{\f1\fnil\fcharset0 Courier New;}}
+{\colortbl ;\red127\green0\blue85;\red42\green0\blue255;\red0\green80\blue50;\red0\green0\blue0;\red63\green127\blue95;\red100\green40\blue128;\red212\green212\blue212;}
+{\*\generator Riched20 10.0.10240}\viewkind4\uc1 
+\pard\cf1\b\f0\fs20\lang16393 #include\cf2\b0 <stdint.h>\cf0\par
+\cf1\b #include\cf2\b0 <stdbool.h>\cf0\par
+\cf1\b #include\cf2\b0 "inc/hw_memmap.h"\cf0\par
+\cf1\b #include\cf2\b0 "inc/hw_types.h"\cf0\par
+\cf1\b #include\cf2\b0 "inc/hw_ints.h"\cf0\par
+\cf1\b #include\cf2\b0 "driverlib/gpio.h"\cf0\par
+\cf1\b #include\cf2\b0 "driverlib/pin_map.h"\cf0\par
+\cf1\b #include\cf2\b0 "driverlib/sysctl.h"\cf0\par
+\cf1\b #include\cf2\b0 "driverlib/uart.h"\cf0\par
+\cf1\b #include\cf2\b0 "driverlib/debug.h"\cf0\par
+\cf1\b #include\cf2\b0 "driverlib/adc.h"\cf0\par
+\cf1\b #include\cf2\b0 "driverlib/interrupt.h"\cf0\par
+\par
+\cf3 uint32_t\cf4  set_temp = 25;\cf0\par
+\cf1\b int\cf4\b0  mode = 1;\cf0\par
+\par
+\cf1\b void\cf4\b0  \b put_temp\b0 (\cf3 uint32_t\cf4  T)\{\cf0\par
+\cf4     \cf1\b int\cf4\b0  temp = T;\cf0\par
+\cf4     \cf1\b int\cf4\b0  a = temp/10;\cf0\par
+\cf4     \cf1\b int\cf4\b0  b = temp - (10*a);\cf0\par
+\cf4     \cf1\b int\cf4\b0  c = set_temp/10;\cf0\par
+\cf4     \cf1\b int\cf4\b0  d = set_temp - (10*c);\cf0\par
+\par
+\cf4     \cf1\b char\cf4\b0  t1 = 48+a;\cf0\par
+\cf4     \cf1\b char\cf4\b0  t2 = 48+b;\cf0\par
+\cf4     \cf1\b char\cf4\b0  t3 = 48+c;\cf0\par
+\cf4     \cf1\b char\cf4\b0  t4 = 48+d;\cf0\par
+\par
+\cf4    \cf5 // char t3 = 167;\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'C'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'u'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'r'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'r'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'e'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'n'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 't'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'T'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'e'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'm'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'p'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 '='\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, t1);\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, t2);\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, 176);\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'C'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ','\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'S'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'e'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 't'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'T'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'e'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'm'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'p'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 '='\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, t3);\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, t4);\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, 176);\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'C'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 '\\n'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 '\\n'\cf4 );\cf0\par
+\par
+\cf4\}\cf0\par
+\par
+\cf1\b void\cf4\b0  \b put_text\b0 ()\{\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'E'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'n'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 't'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'e'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'r'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 't'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'h'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'e'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'T'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'e'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'm'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'p'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'e'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'r'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'a'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 't'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'u'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'r'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 'e'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ':'\cf4 );\cf0\par
+\cf4     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, \cf2 ' '\cf4 );\cf0\par
+\cf4\}\cf0\par
+\par
+\cf1\b void\cf4\b0  \b UARTIntHandler\b0 (\cf1\b void\cf4\b0 )\{\cf0\par
+\cf4     \cf3 uint32_t\cf4  ui32Status;\cf0\par
+\cf4     ui32Status = \cf6\b UARTIntStatus\cf4\b0 (UART0_BASE, true); \cf5 //get interrupt status\cf0\par
+\cf4     \cf6\b UARTIntClear\cf4\b0 (UART0_BASE, ui32Status); \cf5 //clear the asserted interrupts\cf0\par
+\cf4     \cf1\b while\cf4\b0 (\cf6\b UARTCharsAvail\cf4\b0 (UART0_BASE))\{\cf0\par
+\cf4         \cf1\b char\cf4\b0  a = \cf6\highlight7\b UARTCharGet\cf4\highlight0\b0 (UART0_BASE);\cf0\par
+\cf4         \cf1\b if\cf4\b0 (a == \cf2 's'\cf4  || a == \cf2 'S'\cf4 )\{\cf0\par
+\cf4             put_text();\cf0\par
+\cf4             \cf1\b int\cf4\b0  count = 0;\cf0\par
+\cf4             \cf1\b char\cf4\b0  t[2];\cf0\par
+\cf4             \cf1\b while\cf4\b0 (count < 2)\{\cf0\par
+\cf4                 \cf1\b if\cf4\b0 (\cf6\b UARTCharsAvail\cf4\b0 (UART0_BASE))\{\cf0\par
+\cf4                     \cf1\b char\cf4\b0  temp = \cf6\highlight7\b UARTCharGet\cf4\highlight0\b0 (UART0_BASE);\cf0\par
+\cf4                     \cf6\b UARTCharPut\cf4\b0 (UART0_BASE, temp);\cf0\par
+\cf4                     t[count] = temp;\cf0\par
+\cf4                     count++;\cf0\par
+\cf4                 \}\cf0\par
+\cf4             \}\cf0\par
+\cf4             set_temp = (t[0]-48)*10 + (t[1] - 48);\cf0\par
+\cf4             \cf5 //set_temp_updated();\cf0\par
+\cf4         \}\cf0\par
+\cf4     \}\cf0\par
+\cf4\}\cf0\par
+\par
+\cf1\b int\cf4\b0  \b main\b0 (\cf1\b void\cf4\b0 ) \{\cf0\par
+\cf4     \cf3 uint32_t\cf4  ui32ADC0Value[4];\cf0\par
+\cf4     \cf1\b volatile\cf4\b0  \cf3 uint32_t\cf4  ui32TempAvg;\cf0\par
+\cf4     \cf1\b volatile\cf4\b0  \cf3 uint32_t\cf4  ui32TempValueC;\cf0\par
+\cf4     \cf1\b volatile\cf4\b0  \cf3 uint32_t\cf4  ui32TempValueF;\cf0\par
+\par
+\cf4     \cf6\b SysCtlClockSet\cf4\b0 (SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);\cf0\par
+\par
+\cf4     \cf5 //enable peripheral port for r/t and ADC and led\cf0\par
+\cf4     \cf6\b SysCtlPeripheralEnable\cf4\b0 (SYSCTL_PERIPH_UART0); \cf5 //enable port for rcv & tra\cf0\par
+\cf4     \cf6\b SysCtlPeripheralEnable\cf4\b0 (SYSCTL_PERIPH_GPIOA); \cf5 // enable GPIO port for rcv & tran\cf0\par
+\cf4     \cf6\b SysCtlPeripheralEnable\cf4\b0 (SYSCTL_PERIPH_ADC0); \cf5 // enable port for ADC\cf0\par
+\cf4     \cf6\b SysCtlPeripheralEnable\cf4\b0 (SYSCTL_PERIPH_GPIOF); \cf5 // enable GPIO port for led\cf0\par
+\par
+\cf4     \cf6\b GPIOPinConfigure\cf4\b0 (GPIO_PA0_U0RX);\cf0\par
+\cf4     \cf6\b GPIOPinConfigure\cf4\b0 (GPIO_PA1_U0TX); \cf6\b GPIOPinTypeUART\cf4\b0 (GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);\cf0\par
+\cf4     \cf6\b ADCSequenceConfigure\cf4\b0 (ADC0_BASE, 1, ADC_TRIGGER_PROCESSOR, 0);\cf0\par
+\cf4     \cf6\b ADCSequenceStepConfigure\cf4\b0 (ADC0_BASE, 1, 0, ADC_CTL_TS);\cf0\par
+\cf4     \cf6\b ADCSequenceStepConfigure\cf4\b0 (ADC0_BASE, 1, 1, ADC_CTL_TS);\cf0\par
+\cf4     \cf6\b ADCSequenceStepConfigure\cf4\b0 (ADC0_BASE, 1, 2, ADC_CTL_TS);\cf0\par
+\cf4     \cf6\b ADCSequenceStepConfigure\cf4\b0 (ADC0_BASE,1,3,ADC_CTL_TS|ADC_CTL_IE|ADC_CTL_END);\cf0\par
+\cf4     \cf6\b ADCSequenceEnable\cf4\b0 (ADC0_BASE, 1);\cf0\par
+\par
+\cf4     \cf6\b GPIOPinTypeGPIOOutput\cf4\b0 (GPIO_PORTF_BASE, GPIO_PIN_1|GPIO_PIN_3); \cf5 //enable pin for led\cf0\par
+\par
+\cf4     \cf6\b UARTConfigSetExpClk\cf4\b0 (UART0_BASE, \cf6\b SysCtlClockGet\cf4\b0 (), 115200 , (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));\cf0\par
+\par
+\cf4     \cf5 //UART interrupt enable\cf0\par
+\cf4     \cf6\b IntMasterEnable\cf4\b0 ();\cf0\par
+\cf4     \cf6\b IntEnable\cf4\b0 (INT_UART0);\cf5 //enable the UART interrupt\cf0\par
+\cf4     \cf6\b UARTIntEnable\cf4\b0 (UART0_BASE, UART_INT_RX | UART_INT_RT); \cf5 //only enable rx interrupts\cf0\par
+\par
+\cf4     \cf1\b while\cf4\b0 (1)  \{\cf0\par
+\cf4         \cf6\b ADCIntClear\cf4\b0 (ADC0_BASE, 1);\cf0\par
+\cf4         \cf6\b ADCProcessorTrigger\cf4\b0 (ADC0_BASE, 1);\cf0\par
+\cf4         \cf1\b while\cf4\b0 (!\cf6\b ADCIntStatus\cf4\b0 (ADC0_BASE, 1, false)) ;\cf0\par
+\cf4         \cf6\b ADCSequenceDataGet\cf4\b0 (ADC0_BASE, 1, ui32ADC0Value);\cf0\par
+\cf4         ui32TempAvg = (ui32ADC0Value[0] + ui32ADC0Value[1] + ui32ADC0Value[2] + ui32ADC0Value[3] + 2)/4;\cf0\par
+\cf4         ui32TempValueC = (1475 - ((2475 * ui32TempAvg)) / 4096)/10;\cf0\par
+\cf4         \cf5 //ui32TempValueF = ((ui32TempValueC * 9) + 160) / 5;\cf0\par
+\cf4         put_temp(ui32TempValueC);\cf0\par
+\cf4         \cf1\b if\cf4\b0 (ui32TempValueC <= set_temp)\{\cf0\par
+\cf4             \cf6\b GPIOPinWrite\cf4\b0 (GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_3, 8);\cf0\par
+\cf4         \}\cf1\b else\cf4\b0\{\cf0\par
+\cf4             \cf6\b GPIOPinWrite\cf4\b0 (GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_3, 2);\cf0\par
+\cf4         \}\cf0\par
+\cf4         \cf6\b SysCtlDelay\cf4\b0 (20000000);\cf0\par
+\par
+\cf4     \}\cf0\par
+\cf4\}\cf0\par
+\f1\fs22\par
+}
+ 
